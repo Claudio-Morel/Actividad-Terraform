@@ -51,3 +51,20 @@ Por el momento con los recursos ya especifícados es suficiente para levantar un
 Con estos recursos se logra levantar exitosamente un servidor web con un balanceador de carga. Sin embargo este se realizo con las configuraciones más basicas posibles para ser funcional por lo que cuenta con varios aspectos a mejorar. Para más información de los atributos que puede recibir cada recurso se recomienda el siguiente enlace, perteneciente a la documentación oficial de terraform.
 
 - [Terraform registry](https://registry.terraform.io/)
+
+## Actividad 2
+###  Provisionamiento de Infra web con balanceador de carga con Autoscaling. 
+
+Para esta segunda actividad se tomo como base el archivo .tf resultante de la actividad uno puesto que ambas infraestructuras comparten la mayor parte de los recursos (principalmente los relacionados al load balancer) y se realizaron los siguientes cambios:
+
+1. Se añadio un segundo security group específico para el load balancer. Si bien en el resultado final estos son identicos esto se hizo pues se debería cambiar las reglas de ingreso para las instancia de EC2 de manera que solo permita que el balanceador de carga pueda hacerle peticiones.
+
+2. Se cambio la instancia EC2 por un recurso de launch_configuration con los mismos atributos para que el grupo de auto escalado levante según se necesite instancias idénticas a partir de dichas configuraciones. 
+
+3. Se añadieron los siguientes recursos:
+-       resource "aws_autoscaling_group" "test"
+    Este recurso define las especificaciones que tendra el grupo de autoescalado como lo son la cantidad mínima, deseada y máxima de instancia que se pueden mantener de manera simultanea, el nombre de la configuración que se usara para las instancias y la VPC donde se alojaran estas.
+
+
+-       resource "aws_autoscaling_attachment" "test"
+

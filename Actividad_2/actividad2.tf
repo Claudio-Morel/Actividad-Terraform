@@ -78,10 +78,8 @@ resource "aws_lb" "test" {
     create = "5m"
   }
 
-  }
+}
 
-
-//Bien
 resource "aws_lb_target_group" "test" {
   name     = "tf-example-lb-tg"
   port     = 80
@@ -124,7 +122,7 @@ resource "aws_autoscaling_group" "test" {
   }
 }
 
-resource "aws_autoscaling_attachment" "terramino" {
+resource "aws_autoscaling_attachment" "test" {
   autoscaling_group_name = aws_autoscaling_group.test.id
   lb_target_group_arn   = aws_lb_target_group.test.arn
 }
