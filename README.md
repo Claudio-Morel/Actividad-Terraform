@@ -57,14 +57,22 @@ Con estos recursos se logra levantar exitosamente un servidor web con un balance
 
 Para esta segunda actividad se tomo como base el archivo .tf resultante de la actividad uno puesto que ambas infraestructuras comparten la mayor parte de los recursos (principalmente los relacionados al load balancer) y se realizaron los siguientes cambios:
 
-1. Se añadio un segundo security group específico para el load balancer. Si bien en el resultado final estos son identicos esto se hizo pues se debería cambiar las reglas de ingreso para las instancia de EC2 de manera que solo permita que el balanceador de carga pueda hacerle peticiones.
+1. Se añadio un segundo security group específico para el load balancer. Si bien en el resultado final estos son identicos se hizo ya que se debería cambiar las reglas de ingreso en el security group de las instancia de EC2 de manera que solo permita que el load balancer pueda hacerle peticiones.
 
 2. Se cambio la instancia EC2 por un recurso de launch_configuration con los mismos atributos para que el grupo de auto escalado levante según se necesite instancias idénticas a partir de dichas configuraciones. 
 
 3. Se añadieron los siguientes recursos:
 -       resource "aws_autoscaling_group" "test"
-    Este recurso define las especificaciones que tendra el grupo de autoescalado como lo son la cantidad mínima, deseada y máxima de instancia que se pueden mantener de manera simultanea, el nombre de la configuración que se usara para las instancias y la VPC donde se alojaran estas.
+    Este recurso define las especificaciones que tendra el grupo de autoescalado como lo son la cantidad mínima, deseada y máxima de instancias que se pueden mantener de manera simultanea, el nombre de la configuración que se usara para las instancias y la VPC donde se alojaran estas.
 
 
 -       resource "aws_autoscaling_attachment" "test"
+    Al igual que en el caso de la actividad 1 donde un recurso se encargaba de hacer la conexión instancia/ target group en este caso se necesita un recurso para conectar el target group con el autoscaling group. Se le debe específicar el arn del target group y el nombre del autoscaling group.
+
+4. Se elimino:
+        
+-        resource "aws_lb_target_group_attachment" "test" 
+    Ya que al no haber una instancia previamente creada las instancias generadas por el grupo de auto escalado se integrarán automaticamente al target group.
+
+5. Se agregaron las reglas de auto escalado, las cuales utilizan el monitoreo de clouedwatch para gatillar la creación de nuevas instancias de EC2 o eliminar la existente segun las condiciones específicadas.
 

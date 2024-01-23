@@ -74,6 +74,8 @@ resource "aws_lb" "test" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.ec2_security_group.id]
   subnets            = data.aws_subnets.subnets.ids
+  #timeouts.create sirve para específicar el tiempo máximo que puede tomar
+  #el recurso en crearse
   timeouts {
     create = "5m"
   }
