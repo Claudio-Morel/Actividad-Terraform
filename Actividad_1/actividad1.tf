@@ -9,17 +9,15 @@ terraform {
   required_version = ">= 1.2.0"
 }
 
-
-//Bien
 provider "aws" {
   region  = "us-east-1"
   #access_key = <Your credential>
   #secret_acces_key = <Your credential>
 }
+
 resource "aws_default_vpc" "default" {
 }
 
-//Bien
 data "aws_subnets" "subnets" {
   filter {
     name   = "vpc-id"
@@ -27,13 +25,10 @@ data "aws_subnets" "subnets" {
   }
 }
 
-
-# Bien
 resource "aws_security_group" "ec2_security_group" {
   name        = "ec2_security_group"
   description = "Allow Http request"
 
-  # TCP port 80 for HTTP
   ingress {
     from_port   = 80
     to_port     = 80
@@ -50,7 +45,6 @@ resource "aws_security_group" "ec2_security_group" {
 
 }
 
-// Cambio en user data 
 resource "aws_instance" "app_server" {
   ami           = "ami-0005e0cfe09cc9050"
 
@@ -71,22 +65,14 @@ user_data = <<-EOF
   }
 }
 
-
-
 resource "aws_lb" "test" {
   name               = "test-lb-tf"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.ec2_security_group.id]
   subnets            = data.aws_subnets.subnets.ids
+}
 
-
-  enable_deletion_protection = true
-
-  }
-
-
-//Bien
 resource "aws_lb_target_group" "test" {
   name     = "tf-example-lb-tg"
   port     = 80
@@ -94,7 +80,6 @@ resource "aws_lb_target_group" "test" {
   vpc_id = aws_default_vpc.default.id
 }
 
-//Bien
 resource "aws_lb_target_group_attachment" "test" {
   target_group_arn = aws_lb_target_group.test.arn
   target_id        = aws_instance.app_server.id
@@ -112,9 +97,6 @@ resource "aws_lb_listener" "web" {
   }
 }
 
-
-
-//Bien
 output "public_ip" {
   value = aws_lb.test.dns_name
 }
